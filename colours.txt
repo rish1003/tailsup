@@ -1,0 +1,6 @@
+pink - #F63B63
+lavender - #BA78DE
+orange - #C73939
+beige - #F9E1D2
+dark blue - #2A3D61
+turqoise - #11E1D3

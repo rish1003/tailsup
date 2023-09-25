@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "992630909848",
+    "project_id": "tailsup-ac1e5",
+    "storage_bucket": "tailsup-ac1e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992630909848:android:0bc929d0bbae48af5899ed",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQVqAGOzSO0VnmU5g36XTYERJz8SswFu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
