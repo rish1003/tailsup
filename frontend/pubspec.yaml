@@ -81,6 +81,7 @@ flutter:
 
   assets:
     - assets/
+    - assets/shop.png
     - assets/pdf2.pdf
 
   fonts:

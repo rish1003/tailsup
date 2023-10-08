@@ -8,6 +8,7 @@ import 'package:frontend/global.dart';
 import '../Controllers/pet_data.dart';
 import '../Reusables/vetcard.dart';
 import 'PetAdd.dart';
+import 'Vet.dart';
 
 class PetDetails extends StatefulWidget {
   List<Map<String, String>> petsData; // List of pet data
@@ -361,7 +362,8 @@ class _PetDetailsState extends State<PetDetails> {
                             height: 30,
                             child: ElevatedButton(
                               onPressed: () async{
-
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => VetApp()));
 
                               },
                               style: ElevatedButton.styleFrom(

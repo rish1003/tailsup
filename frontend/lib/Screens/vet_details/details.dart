@@ -6,6 +6,7 @@ import 'package:frontend/Controllers/vet_model.dart';
 import 'package:frontend/global.dart';
 import 'package:http/http.dart' as http;
 import '../../Controllers/config.dart';
+import '../../Reusables/custommessage.dart';
 
 class VetDetailsPage extends StatefulWidget {
   final Vet vet;
@@ -203,9 +204,21 @@ class _VetDetailsPageState extends State<VetDetailsPage> {
         // Send Booking Request Button
         Center(
           child: ElevatedButton(
-            onPressed: () {
-              // Add your logic to send booking request here
-              // Example: sendBookingRequest(selectedDate, selectedSlot);
+            onPressed: () async{
+              var request = http.Request('GET', Uri.parse('http://192.168.60.189:8000/book/'));
+
+
+              http.StreamedResponse response = await request.send();
+
+              if (response.statusCode == 200) {
+                CustomMessage.toast('Request Sent!');
+                print(await response.stream.bytesToString());
+              }
+              else {
+              print(response.reasonPhrase);
+              }
+
+
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryColor2,

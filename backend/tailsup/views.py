@@ -55,7 +55,6 @@ def get_favorite_pets(request, user):
 
 @api_view(['POST'])
 def sign_in(request):
-    # Parse the JSON data from the requaqaest body
     data = JSONParser().parse(request)
     phone = data.get('phone')
     password = data.get('password')
@@ -63,18 +62,36 @@ def sign_in(request):
     
     try:
         user = User.objects.get(phone=phone)
-        
-        # Check if the provided password matches the user's stored password
         if (password == user.password):
-            # Authentication successful
             return Response({'message': 'Authentication successful', 'user_id': user.name}, status=status.HTTP_200_OK)
         else:
-            # Authentication failed (password doesn't match)
             return Response({'message': 'Authentication failed'}, status=status.HTTP_401_UNAUTHORIZED)
     except User.DoesNotExist:
-        # Authentication failed (user not found)
         return Response({'message': 'No such user'}, status=status.HTTP_401_UNAUTHORIZED)
     
+@api_view(['POST','PUT'])
+def newuser(request):
+    if request.method == 'POST':
+       serializer = UserSerializer(data= request.data)
+       if serializer.is_valid():
+           serializer.save()
+           return Response({"Created user: ":serializer.data},status=status.HTTP_200_OK)
+       return Response(serializer.errors)
+   
+@api_view(['POST','PUT'])
+def user_update(request):
+    username = request.data["phone"]
+    if request.method=='PUT':
+        try:
+            u = User.objects.get(phone = username)
+        except User.DoesNotExist:
+            return Response({"status":0})
+        serializer = UserSerializer(u,data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data="updated",status=status.HTTP_200_OK)
+        else :
+            return Response(serializer.errors)
 
 @api_view(['GET'])
 def get_favorite_pet_ids(request, user_id):
@@ -91,13 +108,8 @@ def get_favorite_pet_ids(request, user_id):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 @api_view(['POST'])
 def create_pet(request,user):
-    # Extract data from the request
     pet_data = request.data
-
-    # Assuming 'picture' is the field for the image
     picture = request.FILES.get('picture')
-
-    # Create the pet record with the image
     pet = Pet(
         name=pet_data['name'],
         breed=pet_data['breed'],
@@ -107,7 +119,7 @@ def create_pet(request,user):
         gender = pet_data['gender'],
         description =pet_data['description'],
         userid = user,
-        picture=picture  # Save the single image file
+        picture=picture  
     )
 
     pet.save()
@@ -186,16 +198,9 @@ def add_adoption_record(request):
 def fetch_adoption_applications(request, user_id):
     if request.method == 'GET':
         try:
-            # Fetch adoption applications for the specified user_id
             adoption_applications = Adoption.objects.filter(userid=user_id)
-
-            # Fetch the user with the specified user_id
             user = User.objects.get(phone=user_id)
-
-            # Serialize the adoption applications
             serializer = AdoptionSerializer(adoption_applications, many=True)
-
-            # Include the username in the response
             data = {
                 'username': user.name,
                 'adoption_applications': serializer.data,
@@ -243,32 +248,32 @@ def check_slot_status(request, date, slot_id,vet):
         # Find the AvailableSlot based on the provided date and slot_id
         slot = AvailableSlot.objects.get(vetid = vet, date=date, slotid=slot_id)
         slottime = Slot.objects.get(id=slot_id)
-        
-
         if slot.status:
+            
             return Response({'status': 'Booked'})
+    
         else:
+            slot.status = True
+            slot.save()
             return Response({'status': 'Available','st_time' : slottime.start_time})
-           
-
     except AvailableSlot.DoesNotExist:
         return Response({'status': 'Slot not found'}, status=status.HTTP_404_NOT_FOUND)
-    
+
 @api_view(['GET'])
-def book_appointment(request, date, slot_id,user,vet,pet):
-    response = requests.get(f'http://192.168.60.189:8000/slots/check/{date}/{slot_id}/{vet}')
+def book_appointment(request, date, slot_id,user,vet):
+    response = requests.get(f'http://127.0.0.1:8000/slots/check/{date}/{slot_id}/{vet}')
     if response.status_code == 200:
         data = response.json()
         stat = data.get('status')
         slotst = data.get('st_time')
-        print(slotst)
 
         if stat == 'Available':
             vet = User.objects.get(phone=vet)
-            appointment = Appointments(vetid=vet,userid=user,petid=pet,time=slotst,date=date,medicalid=None,status=False,vetname=vet.name)
+            appointment = Appointments(vetid=vet,userid=user,time=slotst,date=date,medicalid=None,status=False,vetname=vet.name)
             appointment.save()
+            
             return Response({'message': 'Appointment booked successfully'})
-        elif status == 'Booked':
+        elif stat == 'Booked':
             return Response({'message': 'Appointment slot is already booked'})
         else:
             return Response({'message': 'Unknown status'})
@@ -283,7 +288,6 @@ def book_appointment(request, date, slot_id,user,vet,pet):
 def past_appointments(request, user_id):
     str_Date = date.today().strftime('%d-%m-%Y')
     past_appointments = Appointments.objects.filter(userid=user_id)
-
     past_appointments_fulfilled = []
 
     for p in past_appointments:
@@ -326,7 +330,6 @@ def list_all_products(request):
 
 @api_view(['GET'])
 def list_products(request, category_id):
-    # List products by category
     products = Product.objects.filter(category_id=category_id)
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
@@ -360,11 +363,11 @@ def search_products(request, keyword):
 
 
 @api_view(['GET'])
-def get_cart(request):
-    user = request.user
-    cart_items = CartItem.objects.filter(user=user)
+def get_cart(request,user):
+
+    cart_items = CartItem.objects.filter(userid=user)
     serializer = CartItemSerializer(cart_items, many=True)
-    return Response({'cart': serializer.data})
+    return Response(serializer.data)
 
 @api_view(['POST'])
 def add_to_cart(request, product_id):
@@ -382,17 +385,26 @@ def add_to_cart(request, product_id):
         return Response({'message': 'Item added to cart successfully'})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PUT'])
-def update_cart_item(request, cart_item_id):
+@api_view(['POST'])
+def update_cart(request, user):
     try:
-        cart_item = CartItem.objects.get(id=cart_item_id)
-    except CartItem.DoesNotExist:
-        return Response({'message': 'Cart item not found'}, status=status.HTTP_404_NOT_FOUND)
-    serializer = CartItemSerializer(cart_item, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'message': 'Cart item updated successfully'})
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        cart_items_data = request.data.get('cart_items', [])
+        for item_data in cart_items_data:
+            item_id = item_data.get('id')
+            quantity = item_data.get('quantity')
+            
+            try:
+                cart_item = CartItem.objects.get(id=item_id, userid=user)
+                cart_item.quantity = quantity
+                cart_item.save()
+            except CartItem.DoesNotExist:
+                return Response({"error": f"Cart item with id {item_id} not found for the user."}, status=status.HTTP_404_NOT_FOUND)
+        
+        cart_items = CartItem.objects.filter(userid=user)
+        serializer = CartItemSerializer(cart_items, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['DELETE'])
 def remove_from_cart(request, cart_item_id):
@@ -404,29 +416,26 @@ def remove_from_cart(request, cart_item_id):
     return Response({'message': 'Item removed from cart successfully'})
 
 @api_view(['POST'])
-def place_order(request):
-    # Get user ID from the authenticated user (you may need to adjust this based on your authentication)
-    user_id = request.user.id
-    
-    # Get the list of product IDs and quantities from the request
+def place_order(request,user,price):
+    user_id = user
     order_items = request.data.get('order_items', [])
-    
-    # Create an Order instance and update product stock
-    total_price = 0  # Calculate the total price of the order
+    total_price = price 
     order_items_data = []
-    
+
     for item in order_items:
-        product_id = item['product_id']
+        product_id = int(item['id'])
         quantity = item['quantity']
         
         try:
             product = Product.objects.get(id=product_id)
-            
-            if product.stock >= quantity:
+            stock = int(product.stock)
+            price = int(product.price)
+            if  stock >= quantity:
                 # Update product stock and calculate the item price
-                product.stock -= quantity
+                stock -= quantity
+                product.stock = str(stock)
                 product.save()
-                item_price = product.price * quantity
+                item_price = price * quantity
                 total_price += item_price
                 
                 order_items_data.append({
@@ -439,18 +448,11 @@ def place_order(request):
         except Product.DoesNotExist:
             return Response({'error': f'Product with ID {product_id} not found.'}, status=status.HTTP_404_NOT_FOUND)
     
-    # Create the Order instance
-    order_data = {
-        'user_id': user_id,
-        'total_price': total_price,
-        'order_items': order_items_data
-    }
-    
-    serializer = OrderSerializer(data=order_data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    new_order = NewOrders(userid=user_id,total=total_price,status=False)
+    new_order.save()
+    CartItem.objects.filter(userid=user_id).delete()
+    return Response({'message': 'Order Places'}, status=status.HTTP_200_OK)
 
 @api_view(['PUT'])
 def complete_order(request, order_id):
@@ -459,30 +461,15 @@ def complete_order(request, order_id):
     except Order.DoesNotExist:
         return Response({'error': 'Order not found.'}, status=status.HTTP_404_NOT_FOUND)
     
-    # Mark the order as completed
     order.status = 'Completed'
     order.save()
     
     return Response({'message': 'Order marked as completed.'})
 
 
-@api_view(['POST'])
-def initiate_payment(request, order_id):
-    try:
-        order = Order.objects.get(id=order_id)
-    except Order.DoesNotExist:
-        return Response({'error': 'Order not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-    # Create a PaymentIntent on Stripe
-    try:
-        intent = stripe.PaymentIntent.create(
-            amount=int(order.total_price * 100),  # Amount in cents
-            currency='usd',  # Currency code (adjust as needed)
-            description=f'Payment for Order {order_id}',
-            payment_method_types=['card'],
-        )
-    except stripe.error.StripeError as e:
-        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Return the client secret to complete the payment on the frontend
-    return Response({'clientSecret': intent.client_secret})
+@api_view(['GET'])
+def get_orders(request, user):
+    orders = NewOrders.objects.filter(userid = user) 
+    serializer = NewOrderSerializer(orders, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+    

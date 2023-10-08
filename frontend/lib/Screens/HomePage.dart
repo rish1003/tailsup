@@ -6,6 +6,7 @@ import '../Controllers/vet_model.dart';
 import '../Reusables/category tile.dart';
 import '../Reusables/vetcard.dart';
 import 'Adopt.dart';
+import 'Shop.dart';
 import 'Vet.dart';
 
 
@@ -106,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 a_width: .9* width ,
                 onPressed: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (BuildContext context) => ShopHomePage()));// Handle container click ShopHomePage
+                      MaterialPageRoute(builder: (BuildContext context) => ShopApp()));// Handle container click ShopHomePage
                   print('Container Clicked!');
                 },
                 shadowColor: Color(0xFFEABD99), // Set shadow color here

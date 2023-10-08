@@ -75,6 +75,7 @@ class _SignInPageState extends State<SignInPage> {
                               child: ElevatedButton(
                                 onPressed: () async{
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('Phone', _phoneController.text);
                                   SignInControl.instance.signInUser(_phoneController.text, _passController.text, context);
                                 },
                                 style: ElevatedButton.styleFrom(

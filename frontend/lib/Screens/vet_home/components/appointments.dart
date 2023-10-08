@@ -45,8 +45,12 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
       []; // Replace with your past appointments data
   List<Appointment> upcomingAppointments =
       []; // Replace with your upcoming appointments data
+  String message = '';
+
+
 
   fetchandgovet(ph) async {
+    print(ph);
     final response =
         await http.get(Uri.parse((global.url) + '/userdetails/' + ph));
 
@@ -90,7 +94,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
           vetId: item['vetid'] ?? '',
         );
       }).toList();
-
+      print(pastappointments);
       setState(() {
         pastAppointments = pastappointments;
       });
@@ -133,6 +137,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
       length: 2, // Two tabs: Past and Upcoming
       child: Scaffold(
         appBar: AppBar(
+          leading: Icon(Icons.add,color: Colors.grey[200]),
           backgroundColor:
               Colors.grey[200], // Set the background color of the AppBar
           bottom: TabBar(
@@ -204,7 +209,8 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                 ),
                 onTap: () async {
                   final response = await http.get(Uri.parse(
-                      (global.url) + '/userdetails/' + appointment.vetId));
+                      (global.url) + '/userdetails/9980653944'));
+                  print(appointment.vetId);
 
                   if (response.statusCode == 200) {
                     final Map<String, dynamic> jsonData =

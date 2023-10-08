@@ -33,13 +33,25 @@ List itemList = [
 Color MainColor = Colors.white;
 Color PrimaryColor = Colors.white;
 Color SecondaryColor = Color(0XFF2C2C2C);
-Color tColor = Colors.white;
+Color tColor = Colors.grey;
 Color iconBack = Color(0XFF262626);
 
 class Iconss {
   String image;
   String head;
   Iconss({required this.image, required this.head});
+}
+
+Widget addVerticalSpace(double height) {
+  return SizedBox(
+    height: height,
+  );
+}
+
+Widget addHorizontalSpace(double width) {
+  return SizedBox(
+    width: width,
+  );
 }
 
 List iconsList = [

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:frontend/Screens/shop/utils.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'itemscreen.dart';
 
@@ -19,7 +20,36 @@ class _ShopHomePageState extends State<ShopHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white, // Set the background color to white
-      appBar: App,
+      appBar: AppBar(
+        title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  addHorizontalSpace(70.0),
+                  const Icon(
+                    Icons.favorite,
+                    color: Color(0xffcf4055),
+                  ),
+                  addHorizontalSpace(5.0),
+                  Text(
+                    'Shop',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.montserrat(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffcf4055),
+                    ),
+                  ),
+                  addHorizontalSpace(5.0),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -28,60 +58,44 @@ class _ShopHomePageState extends State<ShopHomePage> {
               Stack(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(30),
+
+                    padding: EdgeInsets.all(20),
                     // height: 200,
                     width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        Text(
-                          "OFFER",
-                          style: TextStyle(
-                              letterSpacing: 4, color: MainColor, fontSize: 12),
+                        Image.asset('assets/shop.png',height:120),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Best',textAlign: TextAlign.left,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffcf4055),
+                              ),),
+                            Text('Pet',textAlign: TextAlign.center,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffcf4055),
+                              ),),
+                            Text('Products',textAlign: TextAlign.center,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffcf4055),
+                              ),)
+                          ],
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Flat 35% OFFER",
-                          style: TextStyle(
-                              letterSpacing: 4,
-                              color: Colors.white,
-                              fontSize: 25,
-                              // fontFamily: 'Comfortaa-',
-                              fontWeight: FontWeight.w600),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "in honor of World Helath Day\nwe had likely to give this \namazing offer",
-                          style: TextStyle(
-                              letterSpacing: 1,
-                              color: Color.fromARGB(255, 177, 176, 176),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        GestureDetector(
-                          child: Container(
-                            width: 160,
-                            child: Center(child: Text('View Offers')),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 16),
-                            decoration: BoxDecoration(
-                                color: MainColor,
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(13))),
-                          ),
-                        )
-                      ],
+                        ]
                     ),
                     decoration: BoxDecoration(
-                        color: SecondaryColor,
-                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                        color: Colors.white,
+                        border: Border.all(color: Color(0x90cf4055),width: 8),
+                        borderRadius: BorderRadius.all(Radius.circular(20))
+                    ),
                   ),
                   // Positioned(
                   //     child: Image(
@@ -89,159 +103,102 @@ class _ShopHomePageState extends State<ShopHomePage> {
                   // ))
                 ],
               ),
-              SizedBox(
-                height: 50,
-              ),
-
-              // Navigation buttons
+              SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Fruits",
-                    style: TextStyle(
-                        color: Colors.black, // Set text color to black
-                        fontSize: 25,
-                        fontFamily: 'Comfortaa'),
+                    "Categories",
+                    style: GoogleFonts.montserrat(
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff413c3c),
+                    ),
                   ),
-                  Text(
-                    'View All',
-                    style: TextStyle(color: Colors.black), // Set text color to black
-                  )
                 ],
               ),
-              SizedBox(
-                height: 50,
-              ),
+              SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: itemList.map((e) => ItemC(context, e)).toList(),
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CategoryTile(
+                    context:context,
+                    categoryName: "Category 1",
+                    imageUrl: "assets/logo.png", // Replace with your image asset
+                  ),
+                  CategoryTile(
+                    context:context,
+                    categoryName: "Category 2",
+                    imageUrl: "assets/category2_image.png", // Replace with your image asset
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 50,
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  CategoryTile(
+                    context: context,
+                    categoryName: "Category 3",
+                    imageUrl: "assets/category3_image.png", // Replace with your image asset
+                  ),
+                  CategoryTile(
+                    context:context,
+                    categoryName: "Category 4",
+                    imageUrl: "assets/category4_image.png", // Replace with your image asset
+                  ),
+                ],
               ),
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: tColor,
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                          splashColor: Colors.transparent,
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.shop_2_sharp,
-                            color: Colors.black, // Set icon color to black
-                          )),
-                      IconButton(
-                        splashColor: Colors.transparent,
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.search,
-                          size: 20,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      IconButton(
-                        splashColor: Colors.transparent,
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.mail,
-                          size: 18,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      IconButton(
-                        splashColor: Colors.transparent,
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.settings,
-                          size: 20,
-                          color: Colors.grey,
-                        ),
-                      )
-                    ]),
-              )
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  GestureDetector ItemC(BuildContext context, Item e) {
+class CategoryTile extends StatelessWidget {
+  final BuildContext context;
+  final String categoryName;
+  final String imageUrl;
+
+  CategoryTile({
+    required this.context,
+    required this.categoryName,
+    required this.imageUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ItemScreen(e: e),
-        ));
+        // Handle category selection if needed
       },
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(left: 20),
             height: 120,
-            child: Image(
-              image: AssetImage(e.image),
-            ),
-            width: MediaQuery.of(context).size.width / 2.5,
+            width: 120,
             decoration: BoxDecoration(
-              color: e.background,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(300),
-                topRight: Radius.circular(300),
+              color: tColor,
+              borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Color(0x90cf4055),width: 8),
+
+              image: DecorationImage(
+                image: AssetImage(imageUrl),
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    'FRUIT',
-                    style: TextStyle(
-                        color: Colors.black, // Set text color to black
-                        letterSpacing: 5,
-                        fontSize: 10),
-                  ),
-                  Text(
-                    e.name,
-                    style: TextStyle(color: Colors.black), // Set text color to black
-                  ),
-                  Text(
-                    "⭐ (${e.reviewCount} reviews)",
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        '\$${e.price} ',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black), // Set text color to black
-                      ),
-                      Text(
-                        'per Kg',
-                        style: TextStyle(color: Colors.grey, fontSize: 12),
-                      )
-                    ],
-                  )
-                ]),
-            height: 120,
-            width: MediaQuery.of(context).size.width / 2.5,
-            decoration: BoxDecoration(
-              color: tColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
+          SizedBox(height: 8),
+          Text(
+            categoryName,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.montserrat(
+              fontSize: 15.0,
+              fontWeight: FontWeight.bold,
+              color: Color(0xffcf4055),
             ),
           ),
         ],

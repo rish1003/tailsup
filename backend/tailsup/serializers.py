@@ -62,6 +62,17 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = '__all__' 
         
 class CartItemSerializer(serializers.ModelSerializer):
+    product_name = serializers.SerializerMethodField()
+    product_price = serializers.SerializerMethodField()
     class Meta:
         model = CartItem
         fields = '__all__' 
+    def get_product_name(self, obj):
+        return obj.product.name if obj.product else None
+    def get_product_price(self, obj):
+        return obj.product.price if obj.product else None
+    
+class NewOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewOrders
+        fields = '__all__'
