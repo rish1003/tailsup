@@ -94,6 +94,8 @@ class Appointments(models.Model):
     date = models.CharField(max_length=20)
     medicalid = models.IntegerField(null=True,blank=True)
     status = models.BooleanField(default=False)
+    def __str__(self) -> str:
+        return str(self.id)
     
 class Category(models.Model):
     id = models.AutoField(primary_key=True)

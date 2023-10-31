@@ -21,9 +21,11 @@ from django.conf.urls.static import static
 from rest_framework.urlpatterns import format_suffix_patterns 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('count/',views.user_counts),
     path('userdetails/<str:id>',views.getUserDetails),
     path('petdetails/<str:id>',views.getPetDetails),
     path('signin/', views.sign_in),
+    path('register/',views.register_user),
     path('pets/', views.getShelterPets),
     path('favorite_pets/<str:user>', views.get_favorite_pets),
     path('favoritepetids/<str:user_id>',views.get_favorite_pet_ids),

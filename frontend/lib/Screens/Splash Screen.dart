@@ -37,13 +37,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    prefs.setBool('isFirstTime', true);
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
     bool isFirstTime = prefs.getBool('isFirstTime') ?? false;
     if (isFirstTime){
-      prefs.setString('pet_name', "");
+      prefs.setString('Phone', '');
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (BuildContext context) => onboardingCarousel(prefs: prefs)));
     }
@@ -67,6 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
         }
 
         if (ph == '2222'){
+          prefs.setString('Phone', '2222');
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AdminMainPage()),
