@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:frontend/Controllers/vet_model.dart';
 import 'package:frontend/global.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Controllers/config.dart';
 import '../../Reusables/custommessage.dart';
 
@@ -205,7 +206,26 @@ class _VetDetailsPageState extends State<VetDetailsPage> {
         Center(
           child: ElevatedButton(
             onPressed: () async{
-              var request = http.Request('GET', Uri.parse('http://192.168.60.189:8000/book/'));
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              var ph = prefs.getString('Phone');
+              final String date = selectedDate.toLocal().toString().split(' ')[0];
+              final List<String> dateParts = date.split('-');
+              final String reversedDate = '${dateParts[2]}-${dateParts[1]}-${dateParts[0]}';
+
+              print(reversedDate);
+              final String userPhone = ph!.substring(3);  // Replace with the actual user phone
+              final String vetId = widget.vet.phone.toString();  // Assuming 'id' is the vet's ID field
+              print(vetId);
+              print(userPhone);
+              String slotId = "";
+              if (selectedSlotIndex != -1) {
+               slotId = slots[selectedSlotIndex]['id'].toString();}
+              print(slotId);
+
+
+    // Construct the booking URL
+              final String bookingUrl = '${global.url}/book/$date/$slotId/$userPhone/$vetId';
+              var request = http.Request('GET', Uri.parse((global.url)+'/slots/book/'+reversedDate+"/"+slotId+"/"+userPhone+"/"+vetId));
 
 
               http.StreamedResponse response = await request.send();
@@ -215,6 +235,7 @@ class _VetDetailsPageState extends State<VetDetailsPage> {
                 print(await response.stream.bytesToString());
               }
               else {
+                CustomMessage.toast('Slot not available');
               print(response.reasonPhrase);
               }
 

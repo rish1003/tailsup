@@ -37,7 +37,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isFirstTime', true);
+    prefs.setString('Name', '');
+
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );

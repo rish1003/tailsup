@@ -66,7 +66,20 @@ class _PetDetailsState extends State<PetDetails> {
         widget.selectedPetIndex >= widget.petsData.length) {
       // Handle the case where petsData is empty or currentIndex is out of range.
       return Center(
-        child: Text('No pet data available'),
+        child:  ElevatedButton(
+            onPressed: () async{
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreatePetPage()),
+              );
+              //
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey, // Background color
+            ),
+            child: Icon(Icons.add,color: Colors.white,)
+        ),
+
       );
     }
     final currentPet = widget.petsData[widget.selectedPetIndex];

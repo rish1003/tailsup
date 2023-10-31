@@ -52,7 +52,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
   fetchandgovet(ph) async {
     print(ph);
     final response =
-        await http.get(Uri.parse((global.url) + '/userdetails/' + ph));
+        await http.get(Uri.parse((global.url) + '/userdetails/9980653944'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(response.body);
@@ -210,7 +210,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                 onTap: () async {
                   final response = await http.get(Uri.parse(
                       (global.url) + '/userdetails/9980653944'));
-                  print(appointment.vetId);
+                  print(appointment.vetId+"hey");
 
                   if (response.statusCode == 200) {
                     final Map<String, dynamic> jsonData =

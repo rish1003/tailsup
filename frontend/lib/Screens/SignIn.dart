@@ -76,7 +76,7 @@ class _SignInPageState extends State<SignInPage> {
                               child: ElevatedButton(
                                 onPressed: () async{
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  prefs.setString('Phone', _phoneController.text);
+                                  prefs.setString('Phone', "+91"+_phoneController.text);
                                   if (_phoneController.text == '2222'){
                                     Navigator.push(
                                       context,

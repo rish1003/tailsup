@@ -241,10 +241,12 @@ class _ProductDisplayPageState extends State<ProductDisplayPage> {
                       IconButton(
                         icon: Icon(Icons.remove),
                         onPressed: () {
+
                           removeFromCart(product);
                         },
                       ),
-                      Text('1'), // Display quantity (replace with actual quantity)
+                      (localCartItems.indexWhere((item) => item.id == product.id)) != -1 ?
+                      Text(localCartItems[localCartItems.indexWhere((item) => item.id == product.id)].quantity.toString()) : Text('0'),// Display quantity (replace with actual quantity)
                       IconButton(
                         icon: Icon(Icons.add),
                         onPressed: () {

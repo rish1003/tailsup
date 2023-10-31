@@ -111,21 +111,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               height: 56,
                               child: ElevatedButton(
                                 onPressed: () async{
+                                  print("hey");
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   String? ph = prefs.getString('Phone');
-
+                                  print("hey");
                                   if (_passController.text != _confirmPassController.text) {
                                     isPasswordError = true;
                                     isConfirmPasswordError = true;
                                   } else {
                                     isPasswordError = false;
                                     isConfirmPasswordError = false;
-                                  }
-
-                                  if (_pincodeController.text.length != 6) {
-                                    isPincodeError = true;
-                                  } else {
-                                    isPincodeError = false;
                                   }
 
                                   final emailPattern = RegExp(
@@ -138,17 +133,20 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                   }
 
                                   setState(() {}); // Redraw the UI to reflect error changes
-
-                                  if (!isPasswordError && !isConfirmPasswordError && !isPincodeError && !isEmailError) {
+                                  prefs.setString('Name', _nameController.text);
+                                  if (!isPasswordError && !isConfirmPasswordError && !isEmailError) {
                                     final response = await http.post(
                                       Uri.parse((global.url)+'/register/'), // Replace with your API endpoint
                                       body: {
-                                        'phone': ph,
+                                        'phone': ph?.substring(3),
                                         'name': _nameController.text,
                                         'email': _emailController.text,
                                         'password': _passController.text,
-                                        'address': _addressController.text,
-                                        'pincode': _pincodeController.text,
+                                        'address': '_addressController.text',
+                                        'pincode': '123456',
+                                        'is_vet': 'false',
+                                        'is_vendor':'false',
+                                        'is_shelter':'false'
                                       },
                                     );
 
@@ -158,6 +156,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                         MaterialPageRoute(builder: (context) => MainPage()),
                                       );
                                     } else {
+                                      print(response.body);
                                       CustomMessage.toast('Not Created');
                                     }
                                   }
