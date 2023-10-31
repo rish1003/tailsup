@@ -5,6 +5,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+        
+class User2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('is_vet', 'is_vendor', 'is_shelter')
+
 
 class PetSerializer(serializers.ModelSerializer):
     class Meta:
