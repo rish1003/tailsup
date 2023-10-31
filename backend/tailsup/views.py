@@ -406,20 +406,56 @@ def update_cart(request, user):
         for item_data in cart_items_data:
             item_id = item_data.get('id')
             quantity = item_data.get('quantity')
-
+            prod = Product.objects.get(id=item_id)
             try:
-                cart_item = CartItem.objects.get(id=item_id, userid=user)
+                
+                cart_item = CartItem.objects.get(product=prod, userid=user)
                 cart_item.quantity = quantity
                 cart_item.save()
             except CartItem.DoesNotExist:
                 # Create a new CartItem if it doesn't exist
-                cart_item = CartItem(id=item_id, userid=user, quantity=quantity)
+                cart_item = CartItem(product=prod, userid=user, quantity=quantity)
                 cart_item.save()
 
         # Retrieve all cart items for the user
         cart_items = CartItem.objects.filter(userid=user)
         serializer = CartItemSerializer(cart_items, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def edit_cart_items(request,uid):
+    try:
+        cart_items_data = request.data.get('cart_items', [])
+
+        for item_data in cart_items_data:
+            item_id = item_data.get('id')
+            quantity = item_data.get('quantity')
+
+            try:
+                # Get the CartItem based on item_id
+                cart_item = CartItem.objects.get(id=item_id,userid=uid)
+
+                # Update the quantity
+                cart_item.quantity = quantity
+                if quantity == 0:
+                    cart_item.delete()
+                else:
+                    cart_item.save()
+            except CartItem.DoesNotExist:
+                return Response(
+                    {"error": f"Cart item with id {item_id} not found."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+        # Optionally, you can return the updated cart items
+        updated_cart_items = CartItem.objects.filter(id__in=[item['id'] for item in cart_items_data])
+        serializer = CartItemSerializer(updated_cart_items, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -436,15 +472,15 @@ def remove_from_cart(request, cart_item_id):
 def place_order(request,user,price):
     user_id = user
     order_items = request.data.get('order_items', [])
-    total_price = price 
+    total_price = float(price) 
     order_items_data = []
 
     for item in order_items:
-        product_id = int(item['id'])
-        quantity = item['quantity']
+        carti = CartItem.objects.get(id=item['id'])
+        quantity = int(item['quantity'])
         
         try:
-            product = Product.objects.get(id=product_id)
+            product = carti.product
             stock = int(product.stock)
             price = int(product.price)
             if  stock >= quantity:
@@ -456,21 +492,36 @@ def place_order(request,user,price):
                 total_price += item_price
                 
                 order_items_data.append({
-                    'product_id': product_id,
+                    'product_id': product.id,
                     'quantity': quantity,
                     'item_price': item_price
                 })
+                
             else:
                 return Response({'error': 'Insufficient stock for one or more products.'}, status=status.HTTP_400_BAD_REQUEST)
         except Product.DoesNotExist:
-            return Response({'error': f'Product with ID {product_id} not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': f'Product with ID {product.id} not found.'}, status=status.HTTP_404_NOT_FOUND)
     
 
     new_order = NewOrders(userid=user_id,total=total_price,status=False)
     new_order.save()
     CartItem.objects.filter(userid=user_id).delete()
     return Response({'message': 'Order Places'}, status=status.HTTP_200_OK)
+@api_view(['GET'])
+def user_list(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
 
+@api_view(['DELETE'])
+def user_delete(request, user_id):
+    try:
+        user = User.objects.get(phone=str(user_id))
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    user.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 @api_view(['PUT'])
 def complete_order(request, order_id):
     try:
