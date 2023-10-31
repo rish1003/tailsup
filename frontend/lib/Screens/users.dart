@@ -34,7 +34,16 @@ class _UserStatsPageState extends State<UserStatsPage> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      print(response);
+        final responseBody = await response.stream.bytesToString();
+        final jsonData = json.decode(responseBody);
+
+        if (jsonData is List<dynamic>) {
+          final list = jsonData.map((value) => (value is num) ? value.toDouble() : 0.0).toList();
+          print(list);
+          setState(() {
+            userData = list;
+          });
+        }
     }
     else {
       print(response.reasonPhrase);

@@ -406,14 +406,17 @@ def update_cart(request, user):
         for item_data in cart_items_data:
             item_id = item_data.get('id')
             quantity = item_data.get('quantity')
-            
+
             try:
                 cart_item = CartItem.objects.get(id=item_id, userid=user)
                 cart_item.quantity = quantity
                 cart_item.save()
             except CartItem.DoesNotExist:
-                return Response({"error": f"Cart item with id {item_id} not found for the user."}, status=status.HTTP_404_NOT_FOUND)
-        
+                # Create a new CartItem if it doesn't exist
+                cart_item = CartItem(id=item_id, userid=user, quantity=quantity)
+                cart_item.save()
+
+        # Retrieve all cart items for the user
         cart_items = CartItem.objects.filter(userid=user)
         serializer = CartItemSerializer(cart_items, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -32,10 +33,12 @@ class _AdoptionApplicationTrackingState
   }
 
   Future<void> fetchAndSetAdoptionApplications() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? ph = prefs.getString('Phone');
     try {
       // Make an HTTP GET request to fetch adoption applications
       final response = await http.get(
-          Uri.parse(global.url + '/fetch_adoption/9980653944/'));
+          Uri.parse(global.url + '/fetch_adoption/'+ph!.substring(3)+"/"));
 
       // Check if the response status code is 200 (OK)
       if (response.statusCode == 200) {

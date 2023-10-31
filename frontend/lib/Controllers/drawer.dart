@@ -58,14 +58,7 @@ class _MyDrawerState extends State<MyDrawer> {
               ],
             ),
           ),
-          ListTile(
-            title: Text('Edit Details'),
-            onTap: () {
-// Navigate to edit details screen
-              Navigator.of(context).pop(); // Close the drawer
-// Add your navigation logic here
-            },
-          ),
+
           ListTile(
               title: Text('Logout'),
               onTap: () async {

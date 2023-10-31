@@ -56,8 +56,8 @@ class _AppointmentRePageState extends State<AppointmentRePage> {
   Future<void> fetchDiagnoses() async {
 
     try {
-          var request = http.Request('GET', Uri.parse((global.url) + '/appointments/diagnoses/' + widget.apptid));
-
+          var request = http.Request('GET', Uri.parse((global.url) + '/appointments/diagnoses/2' ));
+      print(widget.apptid);
 
       http.StreamedResponse response = await request.send();
       var data = await response.stream.bytesToString();

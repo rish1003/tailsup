@@ -111,56 +111,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               height: 56,
                               child: ElevatedButton(
                                 onPressed: () async{
-                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  String? ph = prefs.getString('Phone');
 
-                                  if (_passController.text != _confirmPassController.text) {
-                                    isPasswordError = true;
-                                    isConfirmPasswordError = true;
-                                  } else {
-                                    isPasswordError = false;
-                                    isConfirmPasswordError = false;
-                                  }
-
-                                  if (_pincodeController.text.length != 6) {
-                                    isPincodeError = true;
-                                  } else {
-                                    isPincodeError = false;
-                                  }
-
-                                  final emailPattern = RegExp(
-                                      r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)*(\.[a-z]{2,4})$');
-
-                                  if (!emailPattern.hasMatch(_emailController.text)) {
-                                    isEmailError = true;
-                                  } else {
-                                    isEmailError = false;
-                                  }
-
-                                  setState(() {}); // Redraw the UI to reflect error changes
-
-                                  if (!isPasswordError && !isConfirmPasswordError && !isPincodeError && !isEmailError) {
-                                    final response = await http.post(
-                                      Uri.parse((global.url)+'/register/'), // Replace with your API endpoint
-                                      body: {
-                                        'phone': ph,
-                                        'name': _nameController.text,
-                                        'email': _emailController.text,
-                                        'password': _passController.text,
-                                        'address': _addressController.text,
-                                        'pincode': _pincodeController.text,
-                                      },
-                                    );
-
-                                    if (response.statusCode == 201) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => MainPage()),
-                                      );
-                                    } else {
-                                      CustomMessage.toast('Not Created');
-                                    }
-                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF9F7BFF),
