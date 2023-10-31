@@ -38,7 +38,7 @@ class SignInControl extends GetxController {
 
     }
     else {
-      CustomMessage.toast('Inavlid Credentials');
+      CustomMessage.toast('Invalid Credentials');
       print(response.reasonPhrase);
     }
   }

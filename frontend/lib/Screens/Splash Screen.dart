@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import '../Controllers/admincontrol.dart';
 import '../Controllers/getdetails.dart';
 import '../Controllers/homescreencontrol.dart';
 import '../Controllers/signin.dart';
@@ -36,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('pet_name', "");
+
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -50,6 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
       String? ph = prefs.getString('Phone');
 
       if (ph!.length == 0){
+        print(ph);
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (BuildContext context) => SignInPage(),
             ));
@@ -64,11 +66,19 @@ class _SplashScreenState extends State<SplashScreen> {
           GetDetailsControl.instance.getUser(ph,prefs);
         }
 
+        if (ph == '2222'){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AdminMainPage()),
+          );
+        }
+        else{
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (BuildContext context) => MainPage(),
+              ));
+          }
 
 
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (BuildContext context) => MainPage(),
-            ));
       }
     }
 

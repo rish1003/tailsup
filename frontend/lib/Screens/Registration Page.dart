@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Controllers/signup.dart';
+import 'package:frontend/Reusables/formelements.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Controllers/homescreencontrol.dart';
-import 'HomePage.dart';
+import '../Controllers/signin.dart';
+import 'Sign Up.dart';
+import 'SignIn.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -11,232 +14,143 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  var signupControl = Get.put(signupcontrol());
-
-  TextEditingController name = TextEditingController();
-
-  TextEditingController email = TextEditingController();
-
-  TextEditingController password = TextEditingController();
-
-  TextEditingController address = TextEditingController();
-
-  TextEditingController pincode = TextEditingController();
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+  var signupconrol = Get.put(SignInControl());
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    String? selectedValue;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Registration'),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFF9E1D2), // Background color
-        ),
-        height: 800,
-        child: ListView(
-            children: [
-              Center(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // Add your app logo here
-                      Image.asset(
-                        'assets/logo.png',
-                        width: 100, // Adjust the size as needed
-                        height: 100, // Adjust the size as needed
+    double bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    return Navigator(
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(
+          builder: (context) {
+            return Scaffold(
+              resizeToAvoidBottomInset: true,
+              backgroundColor: Colors.white,
+              body: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 13),
+                      child: Image.asset(
+                        "assets/loginp3.png",
+                        width: 428,
+                        height: 400,
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Tails Up',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          controller: name,
-                          decoration: InputDecoration(
-                            labelText: 'Name',
-                            labelStyle: TextStyle(
-                              color: Colors.black,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top:50,left:30,right: 30),
+                      child: Column(
+                        textDirection: TextDirection.ltr,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Register',
+                            style: TextStyle(
+                              color: Color(0xFF755DC1),
+                              fontSize: 27,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
+                          ),
+                          SizedBox(
+                            height:20,
+                          ),
+                          FormTextField(fieldcontroller: _phoneController,obscure:false, keytype: TextInputType.text, hinttext: 'Name', hinttextcol: Color(0xFF755DC1), bordercol: Color(0xFF837E93)),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          FormTextField(fieldcontroller: _passController,obscure:false, keytype: TextInputType.text, hinttext: 'Email', hinttextcol: Color(0xFF755DC1), bordercol: Color(0xFF837E93)),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          FormTextField(fieldcontroller: _passController,obscure:false, keytype: TextInputType.text, hinttext: 'Address', hinttextcol: Color(0xFF755DC1), bordercol: Color(0xFF837E93)),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          FormTextField(fieldcontroller: _passController,obscure:false, keytype: TextInputType.number, hinttext: 'Pincode', hinttextcol: Color(0xFF755DC1), bordercol: Color(0xFF837E93)),
+
+                          SizedBox(
+                            height: 20,
+                          ),
+                          ClipRRect(
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            child: SizedBox(
+                              width: 329,
+                              height: 56,
+                              child: ElevatedButton(
+                                onPressed: () async{
+
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF9F7BFF),
+                                ),
+                                child: const Text(
+                                  'Register',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          controller: email,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            labelStyle: TextStyle(
-                              color: Colors.black,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
+                          const SizedBox(
+                            height: 15,
                           ),
-                          validator: (value) {
-                            if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$').hasMatch(value ?? '')) {
-                              return 'Invalid email format';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          controller: password,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            labelStyle: TextStyle(
-                              color: Colors.black,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Have an account?',
+                                style: TextStyle(
+                                  color: Color(0xFF837E93),
+                                  fontSize: 13,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
+                              const SizedBox(
+                                width: 2.5,
                               ),
-                            ),
+                              InkWell(
+                                onTap: ()  {
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => SignInPage()),
+                                  );
+                                },
+                                child:  Text(
+                                  'Log In',
+                                  style: TextStyle(
+                                    color: Color(0xFF755DC1),
+                                    fontSize: 13,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
+                        ],
                       ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          controller: address,
-                          decoration: InputDecoration(
-                            labelText: 'Address',
-                            labelStyle: TextStyle(
-                              color: Colors.black,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFormField(
-                          controller: pincode,
-                          decoration: InputDecoration(
-                            labelText: 'Pincode',
-                            labelStyle: TextStyle(
-                              color: Colors.black,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => MainPage()),
-                          );/*
-                          if (_formKey.currentState!.validate()) {
-                            // Implement registration logic here
-                            // After successful registration, navigate to the home page
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => MyHomePage()),
-                            );
-                          } else {
-                            // Show a dialog for invalid email format
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Invalid Email Format'),
-                                  content: Text('Please enter a valid email address.'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('OK'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }*/
-                        },
-                        child: Text('Register'),
-                      ),
-                    ],
-                  ),
+                    ),
+
+                  ],
                 ),
               ),
-            ]
-        )
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }
